@@ -36,7 +36,7 @@ Parser.parse = function(filename, content) {
 
 Parser.xmlParser = function(filename, content) {
   if (!XML) {
-    XML = require(XML_DEP);
+    XML = require(/* webpackIgnore: true */ XML_DEP);
   }
   var x2js = new XML();
   var configObject = x2js.xml2js(content);
@@ -48,12 +48,12 @@ Parser.xmlParser = function(filename, content) {
 };
 
 Parser.jsParser = function(filename, content) {
-  return require(filename);
+  return require(/* webpackIgnore: true */ filename);
 };
 
 Parser.tsParser = function(filename, content) {
   if (!require.extensions['.ts']) {
-    require(TS_DEP).register({
+    require(/* webpackIgnore: true */ TS_DEP).register({
       lazy: true,
       transpileOnly: true,
       compilerOptions: {
@@ -64,7 +64,7 @@ Parser.tsParser = function(filename, content) {
 
   // Imports config if it is exported via module.exports = ...
   // See https://github.com/lorenwest/node-config/issues/524
-  var configObject = require(filename);
+  var configObject = require(/* webpackIgnore: true */ filename);
 
   // Because of ES6 modules usage, `default` is treated as named export (like any other)
   // Therefore config is a value of `default` key.
@@ -91,11 +91,11 @@ Parser.coffeeParser = function(filename, content) {
     //}
     try {
       // Try to load coffeescript
-      Coffee = require(COFFEE_2_DEP);
+      Coffee = require(/* webpackIgnore: true */ COFFEE_2_DEP);
     }
     catch (e) {
       // If it doesn't exist, try to load it using the deprecated module name
-      Coffee = require(COFFEE_DEP);
+      Coffee = require(/* webpackIgnore: true */ COFFEE_DEP);
     }
     // coffee-script >= 1.7.0 requires explicit registration for require() to work
     if (Coffee.register) {
@@ -103,13 +103,13 @@ Parser.coffeeParser = function(filename, content) {
     }
   }
   // Use the built-in parser for .coffee files with coffee-script
-  return require(filename);
+  return require(/* webpackIgnore: true */ filename);
 };
 
 Parser.icedParser = function(filename, content) {
-  Iced = require(ICED_DEP);
+  Iced = require(/* webpackIgnore: true */ ICED_DEP);
 
-  // coffee-script >= 1.7.0 requires explicit registration for require() to work
+  // coffee-script >= 1.7.0 requires explicit registration for require(/* webpackIgnore: true */ ) to work
   if (Iced.register) {
     Iced.register();
   }
@@ -120,12 +120,12 @@ Parser.yamlParser = function(filename, content) {
     // Lazy loading
     try {
       // Try to load the better js-yaml module
-      Yaml = require(JS_YAML_DEP);
+      Yaml = require(/* webpackIgnore: true */ JS_YAML_DEP);
     }
     catch (e) {
       try {
         // If it doesn't exist, load the fallback visionmedia yaml module.
-        VisionmediaYaml = require(YAML_DEP);
+        VisionmediaYaml = require(/* webpackIgnore: true */ YAML_DEP);
       }
       catch (e) { }
     }
@@ -158,7 +158,7 @@ Parser.jsonParser = function(filename, content) {
       throw e;
     }
     if (!JSON5) {
-      JSON5 = require(JSON5_DEP);
+      JSON5 = require(/* webpackIgnore: true */ JSON5_DEP);
     }
     return JSON5.parse(content);
   }
@@ -166,28 +166,28 @@ Parser.jsonParser = function(filename, content) {
 
 Parser.json5Parser = function(filename, content) {
   if (!JSON5) {
-    JSON5 = require(JSON5_DEP);
+    JSON5 = require(/* webpackIgnore: true */ JSON5_DEP);
   }
   return JSON5.parse(content);
 };
 
 Parser.hjsonParser = function(filename, content) {
   if (!HJSON) {
-    HJSON = require(HJSON_DEP);
+    HJSON = require(/* webpackIgnore: true */ HJSON_DEP);
   }
   return HJSON.parse(content);
 };
 
 Parser.tomlParser = function(filename, content) {
   if(!TOML) {
-    TOML = require(TOML_DEP);
+    TOML = require(/* webpackIgnore: true */ TOML_DEP);
   }
   return TOML.parse(content);
 };
 
 Parser.csonParser = function(filename, content) {
   if (!CSON) {
-    CSON = require(CSON_DEP);
+    CSON = require(/* webpackIgnore: true */ CSON_DEP);
   }
   // Allow comments in CSON files
   if (typeof CSON.parseSync === 'function') {
@@ -198,7 +198,7 @@ Parser.csonParser = function(filename, content) {
 
 Parser.propertiesParser = function(filename, content) {
   if (!PPARSER) {
-    PPARSER = require(PPARSER_DEP);
+    PPARSER = require(/* webpackIgnore: true */ PPARSER_DEP);
   }
   return PPARSER.parse(content, { namespaces: true, variables: true, sections: true });
 };
