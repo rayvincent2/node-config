@@ -24,6 +24,7 @@
   "dependencies": {
     "json5": "^2.1.1"
   },
+  "types": "./types",
   "devDependencies": {
     "@types/node": "^7.0.8",
     "coffeescript": "2.2.4",
