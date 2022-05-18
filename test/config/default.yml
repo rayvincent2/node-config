@@ -3,3 +3,11 @@
 AnotherModule:
   parm2yml: value2yml
 
+"AnotherModule:1":
+  parm2yml: value1
+
+"AnotherModule:1.1":
+  parm2yml: value1.1
+
+"AnotherModule:1.0.1":
+  parm2yml: value1.0.1

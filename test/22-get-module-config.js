@@ -46,11 +46,10 @@ vows.describe('Set SubModule Defaults Multiple Times')
       });
     },
     'Setting submodule defaults for "http-1" again throws an error': function(moduleConfig) {
-      assert.throws(function() {
-        config.util.setModuleDefaults('http-1', {useAgent: 'lala 42', another: 'prop'});
-      }, {
-        name: 'Error',
-        message: 'Submodule "http-1" has already been set'
+      var http1 = config.util.setModuleDefaults('http-1', {useAgent: 'lala 42', another: 'prop'});
+      assert.deepEqual(config.get('http-1'), http1);
+      assert.deepEqual(http1, {
+        useAgent: 'lala 42'
       });
     }
   }
@@ -66,12 +65,11 @@ vows.describe('Set SubModule Defaults Multiple Times')
         obj: {}
       });
     },
-    'Setting submodule defaults for "http-2" again throws an error': function(moduleConfig) {
-      assert.throws(function() {
-        config.util.setModuleDefaults('http-2', {obj: {prop: 'this default isn\'t set'}});
-      }, {
-        name: 'Error',
-        message: 'Submodule "http-2" has already been set'
+    'Setting submodule defaults for "http-2" again throws an error': function() {
+      var moduleConfig = config.util.setModuleDefaults('http-2', {obj: {prop: 'this default isn\'t set'}});
+      assert.deepEqual(config.get('http-2'), moduleConfig);
+      assert.deepEqual(moduleConfig, {
+        obj: {}
       });
     }
   }
@@ -87,12 +85,11 @@ vows.describe('Set SubModule Defaults Multiple Times')
         useAgent: 'lala 42'
       });
     },
-    'Setting submodule defaults for "http-3" again throws an error': function(moduleConfig) {
-      assert.throws(function() {
-        config.util.setModuleDefaults('http-3', {useAgent: 'lala 45', another: 'prop'});
-      }, {
-        name: 'Error',
-        message: 'Submodule "http-3" has already been set'
+    'Setting submodule defaults for "http-3" again throws an error': function() {
+      var moduleConfig = config.util.setModuleDefaults('http-3', {useAgent: 'lala 45', another: 'prop'});
+      assert.deepEqual(config.get('http-3'), moduleConfig);
+      assert.deepEqual(moduleConfig, {
+        useAgent: 'lala 42'
       });
     }
   }
@@ -117,12 +114,20 @@ vows.describe('Set SubModule Defaults Multiple Times')
         parm9: 'value9',
       });
     },
-    'Setting submodule defaults for "AnotherModule" again throws an error': function(moduleConfig) {
-      assert.throws(function() {
-        config.util.setModuleDefaults('AnotherModule', { parm10: 'value10' });
-      }, {
-        name: 'Error',
-        message: 'Submodule "AnotherModule" has already been set'
+    'Setting submodule defaults for "AnotherModule" again throws an error': function() {
+      var moduleConfig = config.util.setModuleDefaults('AnotherModule', { parm10: 'value10' });
+      assert.deepEqual(config.get('AnotherModule'), moduleConfig);
+      assert.deepEqual(moduleConfig, {
+        parm2: 'value2', 
+        parm1: 'value1', 
+        parm6: 'value6', 
+        parm8: 'value8', 
+        parm7: 'value7', 
+        parm3: 'value3', 
+        parm2yml: 'value2yml', 
+        parm4: 'value4', 
+        parm5: 'value5', 
+        parm9: 'value9',
       });
     },
     'Get module config overrides defaults': function() {
@@ -150,7 +155,7 @@ vows.describe('Set SubModule Defaults Multiple Times')
       assert.equal(moduleConfig.get('parm2'), 'value3');
       assert.equal(moduleConfig.get('parm10'), 'value10');
     },
-    'Get module config for unregisted module': function() {
+    'Get module config for unregistered module': function() {
       assert.throws(function() {
         config.util.getModuleConfig('UnregisteredModule', {
           parm2: 'value3',
@@ -159,6 +164,126 @@ vows.describe('Set SubModule Defaults Multiple Times')
       }, {
         name: "Error",
         message: 'Submodule "UnregisteredModule" defaults has not been set'
+      });
+    }
+  }
+})
+.addBatch({
+  'Load the "AnotherModule" v1.0.1 submodule which has existing local configs': {
+    topic : function () {
+      return config.util.setModuleDefaults('AnotherModule', { parm2: 'value3' }, '1.0.1');
+    },
+    'Config settings "AnotherModule" v1.0.1 are set': function(moduleConfig) {
+      assert.deepEqual(moduleConfig, {
+        parm2: 'value2', 
+        parm1: 'value1', 
+        parm6: 'value6', 
+        parm8: 'value8', 
+        parm7: 'value7', 
+        parm3: 'value3', 
+        parm2yml: 'value1.0.1', 
+        parm4: 'value4', 
+        parm5: 'value5', 
+        parm9: 'value9',
+      });
+    },
+    'Get module config overrides defaults': function() {
+      var moduleConfig = config.util.getModuleConfig('AnotherModule', {
+        parm2: 'value3',
+        parm10: 'value10'
+      }, '1.0.1');
+      assert.deepEqual(moduleConfig, {
+        parm2: 'value3', 
+        parm1: 'value1', 
+        parm6: 'value6', 
+        parm8: 'value8', 
+        parm7: 'value7', 
+        parm3: 'value3', 
+        parm2yml: 'value1.0.1', 
+        parm4: 'value4', 
+        parm5: 'value5', 
+        parm9: 'value9',
+        parm10: 'value10'
+      });
+    }
+  }
+})
+.addBatch({
+  'Load the "AnotherModule" v1.1.0 submodule which has existing local configs': {
+    topic : function () {
+      return config.util.setModuleDefaults('AnotherModule', { parm2: 'value3' }, '1.1.0');
+    },
+    'Config settings "AnotherModule" v1.1.0 are set': function(moduleConfig) {
+      assert.deepEqual(moduleConfig, {
+        parm2: 'value2', 
+        parm1: 'value1', 
+        parm6: 'value6', 
+        parm8: 'value8', 
+        parm7: 'value7', 
+        parm3: 'value3', 
+        parm2yml: 'value1.1', 
+        parm4: 'value4', 
+        parm5: 'value5', 
+        parm9: 'value9',
+      });
+    },
+    'Get module config overrides defaults': function() {
+      var moduleConfig = config.util.getModuleConfig('AnotherModule', {
+        parm2: 'value3',
+        parm10: 'value10'
+      }, '1.1.0');
+      assert.deepEqual(moduleConfig, {
+        parm2: 'value3', 
+        parm1: 'value1', 
+        parm6: 'value6', 
+        parm8: 'value8', 
+        parm7: 'value7', 
+        parm3: 'value3', 
+        parm2yml: 'value1.1', 
+        parm4: 'value4', 
+        parm5: 'value5', 
+        parm9: 'value9',
+        parm10: 'value10'
+      });
+    }
+  }
+})
+.addBatch({
+  'Load the "AnotherModule" v1.2.0 submodule which has existing local configs': {
+    topic : function () {
+      return config.util.setModuleDefaults('AnotherModule', { parm2: 'value3' }, '1.2.0');
+    },
+    'Config settings "AnotherModule" v1.2.0 are set': function(moduleConfig) {
+      assert.deepEqual(moduleConfig, {
+        parm2: 'value2', 
+        parm1: 'value1', 
+        parm6: 'value6', 
+        parm8: 'value8', 
+        parm7: 'value7', 
+        parm3: 'value3', 
+        parm2yml: 'value1', 
+        parm4: 'value4', 
+        parm5: 'value5', 
+        parm9: 'value9',
+      });
+    },
+    'Get module config overrides defaults': function() {
+      var moduleConfig = config.util.getModuleConfig('AnotherModule', {
+        parm2: 'value3',
+        parm10: 'value10'
+      }, '1.2.0');
+      assert.deepEqual(moduleConfig, {
+        parm2: 'value3', 
+        parm1: 'value1', 
+        parm6: 'value6', 
+        parm8: 'value8', 
+        parm7: 'value7', 
+        parm3: 'value3', 
+        parm2yml: 'value1', 
+        parm4: 'value4', 
+        parm5: 'value5', 
+        parm9: 'value9',
+        parm10: 'value10'
       });
     }
   }
